@@ -17,6 +17,7 @@ sw s0, 4(sp)
 sw s1, 8(sp)
 sw s2, 12(sp)
 
+
 li s0, CELL_WIDTH
 li s2, 128
 

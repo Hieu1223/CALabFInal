@@ -56,6 +56,7 @@ ebreak
 
 
 # a0 = board x, a1 = board y
+# midpoint algorithm
 render_o_x_y:
     # cell_px = board_x * 32
     li   t0, CELL_WIDTH

@@ -2,7 +2,6 @@
 
 
 
-
 li a0 1
 li a7 93
 ecall
@@ -49,6 +48,7 @@ ebreak
 
 # a0 = player board (16-bit)
 # returns a0 = 1 if win, 0 otherwise
+#apply bitmask over the player state and check if the masked bit field is equal to the mask (the same pattern as the mask)
 check_win:
     li t0, 0xF000   # row 4
     li t1, 0x0F00   # row 3
@@ -97,8 +97,6 @@ on_win:
     li a0, 1
     ret
 ebreak
-
-
 
 
 

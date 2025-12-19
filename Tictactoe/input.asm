@@ -6,6 +6,8 @@ message: .asciz "Key scan code: "
 
 .text
 
+
+#copied from lab asignment
 get_key_code:
     li a0, 0
 
@@ -36,13 +38,17 @@ get_key_code:
     li t1, OUT_ADDRESS_HEXA_KEYBOARD
     lb t0, 0(t1)
     add a0, a0, t0
+    #apply mask
     andi a0 a0 0xff
     ret
 
 ebreak
 
 
+
+
 # a0 = keycode (0xFF masked)
+#put the x and y cordinate of key into key_x and key_y
 translate_key_code:
     mv   t6, a0            # save keycode
 
