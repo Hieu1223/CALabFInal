@@ -1,6 +1,10 @@
 .eqv IN_ADDRESS_HEXA_KEYBOARD 0xFFFF0012
 .eqv OUT_ADDRESS_HEXA_KEYBOARD 0xFFFF0014
-
+.global is_ended
+.data 
+is_ended: .word 0
+win_message0: .asciz "Player 0 wins"
+win_message1: .asciz "Player 1 wins"
 
 .text
 
@@ -25,13 +29,36 @@ main:
 	sb t3, 0(t1)
 	xor s0, s0, s0 # count = s0 = 0
 loop:
-	addi s0, s0, 1 # count = count + 1
-
+	la t0 is_ended
+	lw t0 0(t0)
+	bnez t0 win
 sleep:
 	addi a7, zero, 32
 	li a0, 300 # Sleep 300 ms
 	ecall
 	j loop
+	
+win:
+	la t0 player_turn
+	lw t0 0(t0)
+	bnez t0 display_win_1
+	
+	display_win_0:
+	la a0 win_message0
+	j run_display
+	
+	display_win_1:
+	la a0 win_message1
+	
+	run_display:
+	li a1 1
+	li a7 55
+	ecall
+	
+	
+
+
+
 end_main:
 #------------------------------
 li a7 10

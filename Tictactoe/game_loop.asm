@@ -1,6 +1,7 @@
 .global key_x
 .global key_y
-
+.global won
+.global player_turn
 .data
 msg: .asciz "Game update\n"
 x_state: .word 0
@@ -8,10 +9,14 @@ o_state: .word 0
 key_x: .word 0
 key_y: .word 0
 player_turn: .word 0
+won: .word 0
+invalid_move_message: .asciz "Invalid move"
 .text
 
 li a0 1
 li a7 93
+ecall
+
 
 void_gameloop:
 addi sp sp -28
@@ -32,28 +37,46 @@ la t0 o_state
 lw t0 0(t0)
 or a0 a0 t0
 call check_valid_move
-beqz a0 game_loop_end
+bnez a0 on_invalid_move_end
+
+on_invalid_move:
+la a0 invalid_move_message
+li a1 0
+li a7 55
+ecall
+j game_loop_end
+on_invalid_move_end:
+
 
 #make move
+
+la a0 player_turn
+lw a0 0(a0)
+
+bnez a0 o_make_move
 x_make_move:
 la a0 x_state
 lw a0 0(a0)
 call make_move
 la t0 x_state
 sw a0 0(t0)
+call check_win
 j end_make_move
 
 
-y_make_move:
+o_make_move:
 la a0 o_state
 lw a0 0(a0)
 call make_move
 la t0 o_state
 sw a0 0(t0)
+call check_win
 j end_make_move
 
 
 end_make_move:
+la t0 won
+sw a0 0(t0)
 
 #--------------------------
 #handle rendering
@@ -76,16 +99,27 @@ j end_render
 
 end_render:
 #---------------
+
+skip_swap:
+la t0 won
+lw t0 0(t0)
+bnez t0 game_loop_end
+
 swap_turn:
 la t1 player_turn
 lw t0 0(t1)
 xori t0 t0 1
 sw t0 0(t1)
-mv a0 t0
-li a7 1
-ecall
+
+
 
 game_loop_end:
+
+la t0 won
+lw a0 0(t0)
+la t0 is_ended
+sw a0 0(t0) 
+
 lw a0 0(sp)
 lw a7 4(sp)
 lw t0 8(sp)

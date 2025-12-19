@@ -41,12 +41,70 @@ valid_move:
     ret
 ebreak
 
-#a0 = player state, ret a0 = 0 not win/ 1 win
+
+
+
+
+
+
+# a0 = player board (16-bit)
+# returns a0 = 1 if win, 0 otherwise
 check_win:
+    li t0, 0xF000   # row 4
+    li t1, 0x0F00   # row 3
+    li t2, 0x00F0   # row 2
+    li t3, 0x000F   # row 1
 
+    # check rows
+    and t4, a0, t0
+    beq t4, t0, win
+    and t4, a0, t1
+    beq t4, t1, win
+    and t4, a0, t2
+    beq t4, t2, win
+    and t4, a0, t3
+    beq t4, t3, win
 
-ret
+    # check columns
+    li t0, 0x1111
+    li t1, 0x2222
+    li t2, 0x4444
+    li t3, 0x8888
+
+    and t4, a0, t0
+    beq t4, t0, on_win
+    and t4, a0, t1
+    beq t4, t1, on_win
+    and t4, a0, t2
+    beq t4, t2, on_win
+    and t4, a0, t3
+    beq t4, t3, on_win
+
+    # check diagonals
+    li t0, 0x8421    # top-left to bottom-right
+    li t1, 0x1248    # top-right to bottom-left
+
+    and t4, a0, t0
+    beq t4, t0, on_win
+    and t4, a0, t1
+    beq t4, t1, on_win
+
+    # no win
+    li a0, 0
+    ret
+
+on_win:
+    li a0, 1
+    ret
 ebreak
+
+
+
+
+
+
+
+
 
 
 # a0 = current board state
