@@ -47,6 +47,7 @@ ebreak
 
 
 # a0 = player board (16-bit)
+# a0 = board (x_state | o_state) (16-bit)
 # returns a0 = 1 if win, 0 otherwise
 #apply bitmask over the player state and check if the masked bit field is equal to the mask (the same pattern as the mask)
 check_win:
@@ -89,6 +90,12 @@ check_win:
     and t4, a0, t1
     beq t4, t1, on_win
 
+    li t0 0xffff
+    or t4 a1 a0
+    and t4, t4, t0
+    beq t4, t0, on_draw
+    
+
     # no win
     li a0, 0
     ret
@@ -96,6 +103,12 @@ check_win:
 on_win:
     li a0, 1
     ret
+    
+on_draw:
+    li a0, 2
+    ret
+
+
 ebreak
 
 

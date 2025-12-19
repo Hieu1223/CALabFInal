@@ -1,5 +1,7 @@
 .eqv CELL_WIDTH 32
 .eqv LINE_COLOR 0xffffff
+.eqv X_LINE_COLOR 0xff0000
+.eqv O_LINE_COLOR 0x00ff00
 .eqv SCREEN_BASE_ADDRESS 0x10010000
 .eqv SCREEN_WIDTH 128
 .data
@@ -21,7 +23,7 @@ render_x_x_y:
     mul  t2, a1, t0        # t2 = cell_py
 
     li   t3, 0             # i = 0
-    li   t4, LINE_COLOR
+    li   t4, X_LINE_COLOR
     li   t5, SCREEN_BASE_ADDRESS
 
 x_loop:
@@ -103,7 +105,7 @@ o_x_loop:
     li   a5, SCREEN_BASE_ADDRESS
     add  a4, a4, a5
 
-    li   a6, LINE_COLOR
+    li   a6, O_LINE_COLOR
     sw   a6, 0(a4)
 
 o_skip:

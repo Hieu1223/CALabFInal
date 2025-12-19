@@ -56,7 +56,11 @@ on_invalid_move_end:
 la a0 player_turn #check turn
 lw a0 0(a0)
 
+
+
 bnez a0 o_make_move
+
+
 #update x_state
 x_make_move:
 la a0 x_state
@@ -64,6 +68,8 @@ lw a0 0(a0)
 call make_move
 la t0 x_state
 sw a0 0(t0)
+la a1 o_state
+lw a1 0(a1)
 call check_win
 j end_make_move
 
@@ -74,6 +80,8 @@ lw a0 0(a0)
 call make_move
 la t0 o_state
 sw a0 0(t0)
+la a1 x_state
+lw a1 0(a1)
 call check_win
 j end_make_move
 
