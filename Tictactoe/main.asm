@@ -4,9 +4,18 @@
 
 .text
 
+#only run this file
+#unit width and height in pixel set to 4
+#display width and height set to 512
+
+
 main:
-call void_render_board
+#render board
+	call void_render_board
+#set the handler to gameloop
 	la t0, void_gameloop
+#copy and pasted from lab 11
+
 	csrrs zero, utvec, t0
 	li t1, 0x100
 	csrrs zero, uie, t1 # uie - ueie bit (bit 8 )
@@ -24,7 +33,7 @@ sleep:
 	ecall
 	j loop
 end_main:
-
+#------------------------------
 li a7 10
 ecall 
 
