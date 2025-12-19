@@ -57,13 +57,13 @@ check_win:
 
     # check rows
     and t4, a0, t0
-    beq t4, t0, win
+    beq t4, t0, on_win
     and t4, a0, t1
-    beq t4, t1, win
+    beq t4, t1, on_win
     and t4, a0, t2
-    beq t4, t2, win
+    beq t4, t2, on_win
     and t4, a0, t3
-    beq t4, t3, win
+    beq t4, t3, on_win
 
     # check columns
     li t0, 0x1111
