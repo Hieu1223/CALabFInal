@@ -1,0 +1,189 @@
+#LabEndterm_Group06_Task06
+.data
+hextable: .asciz "0123456789abcdef"
+newline: .asciz "\n"
+notcorrect: .asciz "Invalid String. Input String must be a multiple of 8"
+upperoutput1: .asciz "      Disk 1            Disk 2            Disk 3\n"
+upperoutput2: .asciz "----------------- ----------------- -----------------\n"
+loweroutput: .asciz "----------------- ----------------- -----------------"
+deco1: .asciz "|      "
+deco2: .asciz "     | "
+deco3: .asciz "[[ "
+deco4: .asciz " ]] "
+deco5: .asciz "," 
+input: .space 8000
+xorresult: .space 4000
+
+.text
+li a7, 8
+la a0, input
+li a1, 8000
+ecall
+
+setup:
+la s0, input
+la s1, xorresult
+la s2, hextable
+li s3, 1
+li s4, 2
+li s5, 3
+li s7, 4
+li s8, 8
+li s9, 10
+li s11, 16
+
+countprep:
+li t6, 0
+countchar:
+lb t1, 0(s0)
+beq t1, s9, quickcheck
+addi t6, t6, 1
+addi s0, s0, 1
+j countchar
+
+quickcheck:
+beq t6, zero, invalid
+rem t1, t6, s8
+beq t1, zero, nextstep
+invalid:
+li a7, 4
+la a0, notcorrect
+ecall
+li a7, 10
+ecall
+
+nextstep:
+li a7, 4
+la a0, upperoutput1
+ecall
+li a7, 4
+la a0, upperoutput2
+ecall
+
+prep:
+la s0, input
+la s1, xorresult
+div t5, t6, s8
+li t0, 0
+pairprep:
+beq t0, t5, printing
+li t1, 0
+xorstep:
+beq t1, s7, nextpair
+lb t2, 0(s0)
+lb t3, 4(s0)
+xor t4, t2, t3
+sb t4, 0(s1)
+addi t1, t1, 1
+addi s0, s0, 1
+addi s1, s1, 1
+j xorstep
+nextpair:
+addi s0, s0, 4
+addi t0, t0, 1
+j pairprep
+
+printing:
+la s0, input
+la s1, xorresult
+li t0, 0
+li t1, 0
+addi s10, t5, 0
+printprep:
+bge t0, s10, laststep
+rem t1, t0, s5
+beq t1, zero, formatzero
+beq t1, s3, formatone
+beq t1, s4, formattwo
+
+formatzero:
+jal diskprep
+jal diskprep
+jal xorprep
+li a7, 4
+la a0, newline
+ecall
+addi t0, t0, 1
+j printprep
+
+formatone:
+jal diskprep
+jal xorprep
+jal diskprep
+li a7, 4
+la a0, newline
+ecall
+addi t0, t0, 1
+j printprep
+
+formattwo:
+jal xorprep
+jal diskprep
+jal diskprep
+li a7, 4
+la a0, newline
+ecall
+addi t0, t0, 1
+j printprep
+
+diskprep:
+li t2, 0
+li a7, 4
+la a0, deco1
+ecall
+diskval:
+li a7, 11
+lb a0, 0(s0)
+ecall
+addi s0, s0, 1
+addi t2, t2, 1
+blt t2, s7, diskval
+li a7, 4
+la a0, deco2
+ecall
+ret
+
+xorprep:
+li t2, 0
+li a7, 4
+la a0, deco3
+ecall
+xorval:
+lb t3, 0(s1)
+div t4, t3, s11
+rem t5, t3, s11
+
+la a0, hextable
+add t4, a0, t4
+li a7, 11
+lb a0, 0(t4)
+ecall
+
+la a0, hextable
+add t5, a0, t5
+li a7, 11
+lb a0, 0(t5)
+ecall
+
+addi s1, s1, 1
+addi t2, t2, 1
+blt t2, s7, comma
+xornextxor:
+blt t2, s7, xorval
+li a7, 4
+la a0, deco4
+ecall
+ret
+
+comma:
+li a7, 4
+la a0, deco5
+ecall
+j xornextxor
+
+laststep:
+li a7, 4
+la a0, loweroutput
+ecall
+li a7, 10
+ecall
