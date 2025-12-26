@@ -29,7 +29,7 @@ main:
 	sb t3, 0(t1)
 	xor s0, s0, s0 # count = s0 = 0
 loop:
-	la t0 is_ended
+	la t0 won
 	lw t0 0(t0)
 	bnez t0 win
 sleep:
@@ -47,7 +47,7 @@ win:
 	
 	la t0 player_turn
 	lw t0 0(t0)
-	
+	beqz t0 display_win_0
 	bnez t0 display_win_1
 	
 	display_draw:
