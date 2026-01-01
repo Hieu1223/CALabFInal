@@ -37,7 +37,6 @@ sleep:
 	li a0, 300 # Sleep 300 ms
 	ecall
 	j loop
-	
 win:
 	la t0 won
 	lw t0 0(t0)

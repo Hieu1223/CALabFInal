@@ -58,7 +58,7 @@ ebreak
 
 
 # a0 = board x, a1 = board y
-# midpoint algorithm
+# x^2+ y^2  <r^2
 render_o_x_y:
     # cell_px = board_x * 32
     li   t0, CELL_WIDTH
@@ -76,13 +76,13 @@ o_y_loop:
 o_x_loop:
     # dx = i - 16
     addi t4, t2, -16
-    mul  t4, t4, t4         # dx²
+    mul  t4, t4, t4         # dxï¿½
 
     # dy = j - 16
     addi t5, t3, -16
-    mul  t5, t5, t5         # dy²
+    mul  t5, t5, t5         # dyï¿½
 
-    add  t6, t4, t5         # dx² + dy²
+    add  t6, t4, t5         # dxï¿½ + dyï¿½
 
     # if d < 210 skip
     li   a2, 210

@@ -27,8 +27,7 @@ sw t1 12(sp)
 sw t2 16(sp)
 
 #this is used to get key code and store into key_x and key_y
-call get_key_code
-call translate_key_code
+call get_key
 
 #check if move_valid
 la a0 x_state

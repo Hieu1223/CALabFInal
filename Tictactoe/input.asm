@@ -7,54 +7,48 @@ message: .asciz "Key scan code: "
 .text
 
 
-#copied from lab asignment
-get_key_code:
-    li a0, 0
+# --------------------------------------------------
+# get_key_xy
+#   stores column -> key_x
+#   stores row    -> key_y
+# --------------------------------------------------
+get_key:
+    # ---------- scan keypad ----------
+    li t6, 0                      # t6 = accumulated keycode
 
     li t1, IN_ADDRESS_HEXA_KEYBOARD
-    li t2, 0x01              # Check row 1
-    sb t2, 0(t1)             # Must reassign expected row
-    li t1, OUT_ADDRESS_HEXA_KEYBOARD
-    lb t0, 0(t1)
-    add a0, a0, t0
-
-    li t1, IN_ADDRESS_HEXA_KEYBOARD
-    li t2, 0x02              # Check row 2
+    li t2, 0x01
     sb t2, 0(t1)
     li t1, OUT_ADDRESS_HEXA_KEYBOARD
     lb t0, 0(t1)
-    add a0, a0, t0
+    add t6, t6, t0
 
     li t1, IN_ADDRESS_HEXA_KEYBOARD
-    li t2, 0x04              # Check row 3
+    li t2, 0x02
     sb t2, 0(t1)
     li t1, OUT_ADDRESS_HEXA_KEYBOARD
     lb t0, 0(t1)
-    add a0, a0, t0
+    add t6, t6, t0
 
     li t1, IN_ADDRESS_HEXA_KEYBOARD
-    li t2, 0x88              # Check row 4 and re-enable bit 7
+    li t2, 0x04
     sb t2, 0(t1)
     li t1, OUT_ADDRESS_HEXA_KEYBOARD
     lb t0, 0(t1)
-    add a0, a0, t0
-    #apply mask
-    andi a0 a0 0xff
-    ret
+    add t6, t6, t0
 
-ebreak
+    li t1, IN_ADDRESS_HEXA_KEYBOARD
+    li t2, 0x88
+    sb t2, 0(t1)
+    li t1, OUT_ADDRESS_HEXA_KEYBOARD
+    lb t0, 0(t1)
+    add t6, t6, t0
 
-
-
-
-# a0 = keycode (0xFF masked)
-#put the x and y cordinate of key into key_x and key_y
-translate_key_code:
-    mv   t6, a0            # save keycode
+    andi t6, t6, 0xff              # masked keycode
 
     # ---------- decode column (x) ----------
-    andi t0, t6, 0x0F      # column bits
-    li   t1, 0             # x = 0
+    andi t0, t6, 0x0F              # column bits
+    li   t1, 0                     # x counter
 
 col_loop:
     andi t2, t0, 1
@@ -64,13 +58,12 @@ col_loop:
     j col_loop
 
 col_done:
-    la   t3, key_y
-    sw   t1, 0(t3)
+    la t3, key_y
+    sb t1, 0(t3)
 
     # ---------- decode row (y) ----------
-    andi t0, t6, 0xF0      # row bits
-    srli t0, t0, 4
-    li   t1, 0             # y = 0
+    srli t0, t6, 4                 # row bits
+    li   t1, 0                     # y counter
 
 row_loop:
     andi t2, t0, 1
@@ -80,9 +73,9 @@ row_loop:
     j row_loop
 
 row_done:
-    la   t3, key_x
-    sw   t1, 0(t3)
+    la t3, key_x
+    sb t1, 0(t3)
 
     ret
-ebreak
+
  
