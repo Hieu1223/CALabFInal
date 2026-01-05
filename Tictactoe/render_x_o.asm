@@ -1,8 +1,8 @@
 .eqv CELL_WIDTH 32
 .eqv LINE_COLOR 0xffffff
-.eqv X_LINE_COLOR 0xff0000
+.eqv X_LINE_COLOR 0xff00ff
 .eqv O_LINE_COLOR 0x00ff00
-.eqv SCREEN_BASE_ADDRESS 0x10010000
+.eqv SCREEN_BASE_ADDRESS 0x10040000
 .eqv SCREEN_WIDTH 128
 .data
 circle_pixel_array: .word 
@@ -76,20 +76,20 @@ o_y_loop:
 o_x_loop:
     # dx = i - 16
     addi t4, t2, -16
-    mul  t4, t4, t4         # dx�
+    mul  t4, t4, t4         # dx
 
     # dy = j - 16
     addi t5, t3, -16
-    mul  t5, t5, t5         # dy�
+    mul  t5, t5, t5         # dy
 
-    add  t6, t4, t5         # dx� + dy�
+    add  t6, t4, t5         # dx + dy
 
     # if d < 210 skip
-    li   a2, 210
+    li   a2, 225
     blt  t6, a2, o_skip
 
     # if d > 240 skip
-    li   a2, 240
+    li   a2, 255
     bgt  t6, a2, o_skip
 
     # screen_x = cell_px + i

@@ -9,7 +9,7 @@ ecall
 # a0 = board state
 # return a0 = 1 if valid, 0 if invalid
 check_valid_move:
-    mv   t6, a0          # save board
+    mv   t6, a0          # load board state
 
     # ---- load key_x ----
     la   t0, key_x
@@ -18,7 +18,6 @@ check_valid_move:
     # ---- load key_y ----
     la   t0, key_y
     lw   t2, 0(t0)       # t2 = y
-
     # ---- pos = y*4 + x ----
     slli t2, t2, 2       # y * 4
     add  t2, t2, t1      # pos
@@ -123,11 +122,11 @@ ebreak
 # returns a0 = updated board state
 make_move:
     # ---- load key_x ----
-    la   t0, key_x
+    la   t0, key_x	#start make_move
     lw   t1, 0(t0)        # t1 = x
 
     # ---- load key_y ----
-    la   t0, key_y
+    la   t0, key_y		
     lw   t2, 0(t0)        # t2 = y
 
     # ---- pos = y*4 + x ----
@@ -144,3 +143,19 @@ make_move:
     ret
 ebreak
 
+
+clear_game_logic:
+li t0 0
+la t1 x_state
+sw t0 0(t1)
+la t1 o_state
+sw t0 0(t1)
+la t1 key_x
+sw t0 0(t1)
+la t1 key_y
+sw t0 0(t1)
+la t1 player_turn
+sw t0 0(t1)
+la t1 won
+sw t0 0(t1)
+ret

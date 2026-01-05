@@ -28,15 +28,12 @@ sw t2 16(sp)
 
 #this is used to get key code and store into key_x and key_y
 call get_key
-
 #check if move_valid
 la a0 x_state
 lw a0 0(a0)
 la t0 o_state
 lw t0 0(t0)
 or a0 a0 t0 #x_state or o_state to get the bitfield representing filled cell
-
-
 call check_valid_move
 bnez a0 on_invalid_move_end
 
@@ -93,12 +90,11 @@ sw a0 0(t0)
 #--------------------------
 #handle rendering
 #render_x_x_y to render x and render_o_x_y to render o
+
 la t0 key_x 
 lw a0 0(t0) 
 la t0 key_y          #get key (x,y)
 lw a1 0(t0)
-
-
 la t0 player_turn
 lw t0 0(t0)               #render the apporiate symbol
 bnez t0 o_render

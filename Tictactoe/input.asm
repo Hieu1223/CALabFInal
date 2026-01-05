@@ -44,37 +44,34 @@ get_key:
     lb t0, 0(t1)
     add t6, t6, t0
 
-    andi t6, t6, 0xff              # masked keycode
 
-    # ---------- decode column (x) ----------
-    andi t0, t6, 0x0F              # column bits
-    li   t1, 0                     # x counter
-
-col_loop:
-    andi t2, t0, 1
-    bnez t2, col_done
-    srli t0, t0, 1
-    addi t1, t1, 1
-    j col_loop
-
-col_done:
-    la t3, key_y
-    sb t1, 0(t3)
-
-    # ---------- decode row (y) ----------
-    srli t0, t6, 4                 # row bits
-    li   t1, 0                     # y counter
-
-row_loop:
-    andi t2, t0, 1
-    bnez t2, row_done
-    srli t0, t0, 1
-    addi t1, t1, 1
-    j row_loop
-
-row_done:
-    la t3, key_x
-    sb t1, 0(t3)
+translate_key_code:
+    andi t0, t6, 0xff              
+    li t1 0
+    li t3 1
+    andi t4 t0 0xf
+    input_row_loop_start:
+    beq t4 t3 input_row_loop_end
+    srli t4 t4 1
+    addi t1 t1 1
+    j input_row_loop_start
+    input_row_loop_end:
+    
+    la t5 key_y
+    sw t1 0(t5)
+    # do col
+    li t1 0
+    srli t0 t0 4 # mask the correct ones
+    input_col_loop_start:
+    beq t0 t3 input_col_loop_end
+    srli t0 t0 1
+    addi t1 t1 1
+    j input_col_loop_start
+    input_col_loop_end:
+    
+    
+    la t5 key_x
+    sw t1 0(t5)
 
     ret
 
